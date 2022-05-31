@@ -52,10 +52,12 @@ def update_bots(pairs, strategy):
             "bot_id": bot_id
             }
         )
-        print(f'Error: {error}')
+        if len(error) > 0:
+            print(f'{key} Error: {error}')
+            continue
         #bot_list[key] = data["id"]
         print(f'{pre_name+key} > updated')
-        time.sleep(0.3)
+        time.sleep(0.1)
 
 def enable_bots(pairs):
     for key in pairs:
