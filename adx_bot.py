@@ -312,7 +312,10 @@ else:
     max_positions = config.MAX_OPEN_POSITIONS
 
 print(f'Max positions: {max_positions}')
-
+if max_positions < 1:
+    print('ERROR: Not enough liquidity to start a bot')
+    exit()
+    
 last_balance_check = strftime("%Y-%m-%d", gmtime())
 
 f = open("3ctrigger_log.txt", "a")
