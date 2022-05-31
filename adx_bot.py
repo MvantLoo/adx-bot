@@ -65,17 +65,23 @@ def get_tradeable_balance():
             print(f'Balance: {balance}')
             trycnt = 0
         except Exception as e:
-            print("Connection error, trying again...")
+            print(e)
             f = open("3ctrigger_log.txt", "a")
-            f.write(f'FTX cononnection error at {strftime("%Y-%m-%d %H:%M:%S", gmtime())} UTC\n')
+            f.write(f'FTX connection error at {strftime("%Y-%m-%d %H:%M:%S", gmtime())} UTC: {e}\n')
             f.close()
             trycnt -= 1
             if trycnt == 3:
-                time.sleep(3)
+                print(f'Connection error, trying again... (count down: {trycnt})')
+                time.sleep(5)
             elif trycnt == 2:
+                print(f'Connection error, trying again... (count down: {trycnt})')
                 time.sleep(15)
             elif trycnt == 1:
+                print(f'Connection error, trying again... (count down: {trycnt})')
                 time.sleep(45)
+            elif trycnt == 0:
+                print('Giving up....')
+                exit()
         else:
             return balance
 
