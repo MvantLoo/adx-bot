@@ -83,6 +83,19 @@ def disable_bots(pairs):
         print(f'ShortPy_{key} > disabled')
         time.sleep(0.5)
 
+def delete_bots(pairs):
+    for key in pairs:
+        bot_id = pairs[key]
+        print(f'Delete: {key} - {bot_id}')
+        error, data = p3cw.request(
+            entity='bots',
+            action='delete',
+            action_id = bot_id,
+        )
+        if len(error) > 0:
+            print(f'Error: {error}')
+        time.sleep(0.5)
+
 def load_bot_ids(filename):
     d = {}
     with open(filename) as f:
@@ -107,6 +120,7 @@ if longbots_file.is_file() or shortbots_file.is_file():
     print("2 - Enable all bots - disabled")
     print("3 - Disable all bots - disabled")
     print("4 - Check for new pairs and add to list - does nothing, yet!")
+    print("9 - Delete all bots !!")
     x = input()
     if x == "1":
         print("Updating bots....")
@@ -133,9 +147,14 @@ if longbots_file.is_file() or shortbots_file.is_file():
         #  Run generate_long_bots (and short) to create bots - still check min price - and add to bot_id files
         #  Run bot update to make sure new bots have same settings.
         pass
-        
+    elif x == "9":
+        print("Delete all bots...")
+        delete_bots(long_bot_ids)
+        delete_bots(short_bot_ids)
+        longbots_file.unlink()
+        shortbots_file.unlink()
     else:
-        print("Choose only the numbers 1, 2, 3, or 4. Try harder next time!")
+        print("Choose only the numbers 1, 2, 3, 4, or 9. Try harder next time!")
         
 else:
     print("No existing bot ID files found, can't perform this task. Create some bots first.")
