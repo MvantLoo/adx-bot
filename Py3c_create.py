@@ -95,8 +95,8 @@ def generate_long_bots(pairs, minprice):
                 "strategy": "long"
                 }
             )
-            print(f'{key} Error: {error}')
             if len(error) > 0:
+                print(f'{key} Error: {error}')
                 continue
             bot_list[key] = data["id"]
             print(f'{key}  > {bot_list[key]}')
