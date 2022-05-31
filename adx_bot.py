@@ -119,7 +119,8 @@ def close_deal(pair, bot_id):
 def get_positions():
     open_positions = {}
     all_positions = ftx.fetchPositions(None, {"showAvgPrice": True})
-    if 'info' in all_positions[0]:
+    try:
+      if 'info' in all_positions[0]:
         for y in all_positions:
             x=y['info']
             future = (x["future"])
@@ -129,7 +130,7 @@ def get_positions():
             recentAverageOpenPrice = (x["recentAverageOpenPrice"])
             if size != '0.0':
                 open_positions[future] = size, side, cost, recentAverageOpenPrice
-    else:
+      else:
         for x in all_positions:
             future = (x["future"])
             size = (x["size"])
@@ -138,7 +139,8 @@ def get_positions():
             recentAverageOpenPrice = (x["recentAverageOpenPrice"])
             if size != '0.0':
                 open_positions[future] = size, side, cost, recentAverageOpenPrice
-        
+    except Exception as e:
+      pass
     return open_positions
 
 def load_bot_ids(filename):
