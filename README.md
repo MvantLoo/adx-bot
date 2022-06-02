@@ -21,13 +21,6 @@ This script creates a set of trading bots on [3Commas.io](https://3commas.io/?c=
 - Click at your name in the right-top and select `API`: https://ftx.com/settings/api
   - Press `Create API Key for PyBot1`
   - Copy `API key` and `API Secret` to a text-file for later usage
-  - Press on the pencil at the begining of the line and call this API: `PyBot1`
-- Click at your name in the right-top and select Subaccounts and select `Main Account`
-- Click at your name in the right-top and select `API`: https://ftx.com/settings/api
-  - Press `Create API Key`
-  - Copy `API key` and `API Secret` to a text-file for later usage
-  - Press on the pencil at the begining of the line and call this API: `3Commas`
-
 
 #### Create and setup 3Commas
 - Create a free 3Commas account
@@ -39,6 +32,14 @@ This script creates a set of trading bots on [3Commas.io](https://3commas.io/?c=
   - Name: pybot
   - Select: `Bots read`, `Bots write` and `Accounts read`
   - Copy `API key` and `API Secret` to a text-file for later usage
+- Connect 3Commas with FTX
+  - Go to `My Exchanges`: https://3commas.io/accounts
+  - Press `+ Connect a new exchange`
+  - Select `API Connect`
+  - Name: `FTX`
+  - Sub-accoun Name: `PyBot1`
+  - API Key: Use the FTX API Key
+  - API Secret: Use the FTX API Secret
 
 ## Setup Google Cloud VM
 
