@@ -20,18 +20,14 @@ This script creates a set of trading bots on [3Commas.io](https://3commas.io/?c=
 - Execute the following commands
   1. `sudo apt-get -y update`
   1. `sudo apt-get -y install build-essential wget unzip tmux python3 python3-pip`
-  1. ```
-  pip3 install --upgrade setuptools
-  pip3 install TA-lib pandas_ta ccxt py3cw
-  ```
-  1. ```
-  sudo wget http://prdownloads.sourceforge.net/ta-lib/ta-lib-0.4.0-src.tar.gz
+  1. ```pip3 install --upgrade setuptools
+  pip3 install TA-lib pandas_ta ccxt py3cw```
+  1. ```sudo wget http://prdownloads.sourceforge.net/ta-lib/ta-lib-0.4.0-src.tar.gz
   tar -xzf ta-lib-0.4.0-src.tar.gz
   cd ta-lib/
   ./configure --prefix=/usr
   make
-  sudo make install
-  ```
+  sudo make install```
 
 ## Setup FTX and 3Commas
 
