@@ -49,7 +49,7 @@ This script creates a set of trading bots on [3Commas.io](https://3commas.io/?c=
   - Name: `vm-pybot`
   - Region: `us-east1 (South Carolina)`
   - Machine type: `e2-micro (2 vCPU, 1 GB memory`
-  - CREATE
+  - `CREATE`
 - When the VM is created
   - Go to https://console.cloud.google.com/compute/instances
   - Press under Connect at `SSH`. An commandline interface should pop-up in a new window.
@@ -71,6 +71,7 @@ This script creates a set of trading bots on [3Commas.io](https://3commas.io/?c=
      ./configure --prefix=/usr
      make
      sudo make install
+     cd ..
      ```
   1. ```
      git clone https://github.com/MvantLoo/adx-bot
