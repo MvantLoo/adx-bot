@@ -7,8 +7,38 @@ This script creates a set of trading bots on [3Commas.io](https://3commas.io/?c=
 
 ## Setup FTX and 3Commas
 
-- x
-- y
+#### Create and setup FTX
+- Create an FTX account
+  - Go to [FTX.com](https://ftx.com/referrals#a=mvantloo)
+  - Follow the registration process
+- Logon and deposit tokens of your choice.
+  - Go to https://ftx.com/wallet and `CONVERT` the tokens to `USD (USD)` as this script __only__ works with USD.
+- Go to the Subaccounts page: https://ftx.com/profile#Subaccounts
+  - Press `CREATE SUBACCOUNT`, call this `PyBot1`
+  - At `Select Account`, choose `PyBot1`, see at the right-top that you see the name of this sub-account.
+  - At `Transfer Funds Between Subaccounts` choose `USD (USD)`, Source Account: `Main Account`, Destination Account: `PyBot1` and the amount of USD that you want to use for this script.
+  - Go to the Wallet at https://ftx.com/wallet, look at the right-top to see if you are at subaccount `PyBot1` and see if you see your USD's.
+- Click at your name in the right-top and select `API`: https://ftx.com/settings/api
+  - Press `Create API Key for PyBot1`
+  - Copy `API key` and `API Secret` to a text-file for later usage
+  - Press on the pencil at the begining of the line and call this API: `PyBot1`
+- Click at your name in the right-top and select Subaccounts and select `Main Account`
+- Click at your name in the right-top and select `API`: https://ftx.com/settings/api
+  - Press `Create API Key`
+  - Copy `API key` and `API Secret` to a text-file for later usage
+  - Press on the pencil at the begining of the line and call this API: `3Commas`
+
+
+#### Create and setup 3Commas
+- Create a free 3Commas account
+  - Go to [3Commas.io](https://3commas.io/?c=tc954485) 
+  - Press `Try It Free`
+  - Follow the registration process
+- Logon, click on the round icon at the right-top and select `API`
+- Press `+ New API access token`
+  - Name: pybot
+  - Select: `Bots read`, `Bots write` and `Accounts read`
+  - Copy `API key` and `API Secret` to a text-file for later usage
 
 ## Setup Google Cloud VM
 
