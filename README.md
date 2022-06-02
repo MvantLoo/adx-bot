@@ -48,6 +48,48 @@ This script creates a set of trading bots on [3Commas.io](https://3commas.io/?c=
 
 ## Configure and run the adx-bot
 
-- x
-- y
+- Execute the following commands
+  1. ```
+     cd adx-bot
+	 cp example.config.py config.py
+	 ```
+  1. ```
+     nano config.py
+	 ```
+- Update the following lines:
+  1. `TC_ACCOUNT_ID = ''` 3Commas Account ID
+  1. `TC_API_KEY = ''` 3Commas API Key
+  1. `TC_API_SECRET = ''` 3Commas API Secret
 
+  1. `API_KEY = ''` FTX API Key
+  1. `SECRET_KEY = ''` FTX Secret Key
+  1. `SUB_ACCOUNT = ''` FTX Sub-account
+- Save the file and exit nano with `Ctrl-X`, confirm the filename.
+- Start a new Tmux session
+  ```
+  tmux new -s pybot1
+  ```
+- Create the bots
+  ```
+  python3 Py3c_create.py
+  ```
+- Run the script
+  ```
+  python3 adx_bot.py
+  ```
+- Sit back and enjoy
+
+### Reopen the running script
+
+If for whatever reason you loose access to the SSH window, you can open a new window and reopen the running session.
+
+- Go to https://console.cloud.google.com/compute/instances
+- Press under Connect at `SSH`. An commandline interface should pop-up in a new window.
+- List the running Tmux sessions
+  ```
+  tmux ls
+  ```
+- Attach to the running `pybot1` session
+  ```
+  tmux a -t pybot1
+  ```
