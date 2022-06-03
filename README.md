@@ -58,7 +58,7 @@ This script creates a set of trading bots on [3Commas.io](https://3commas.io/?c=
      sudo apt-get -y update
      ```
   1. ```
-     sudo apt-get -y install build-essential wget unzip tmux python3 python3-pip
+     sudo apt-get -y install build-essential wget git unzip tmux python3 python3-pip
      ```
   1. ```
      pip3 install --upgrade setuptools
