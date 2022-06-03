@@ -26,24 +26,30 @@ p3cw = Py3CW(
     }
 )
 
-ftx = ccxt.ftx({
-    'apiKey': config.API_KEY,
-    'secret': config.SECRET_KEY,
-    'headers': {'FTX-SUBACCOUNT': config.SUB_ACCOUNT}
-})
+if config.EXCHANGE == 'FTX':
+    exchange = ccxt.ftx({
+        'apiKey': config.API_KEY,
+        'secret': config.SECRET_KEY,
+        'headers': {'FTX-SUBACCOUNT': config.SUB_ACCOUNT}
+    })
+elif config.EXCHANGE == 'BINANCE':
+    exchange = ccxt.binance({
+        'apiKey': config.API_KEY,
+        'secret': config.SECRET_KEY
+    })
 
-#ftx.verbose = True
+#exchange.verbose = True
 
 def get_markets():
     trycnt = 4
     while trycnt > 0:
         try:
-            all_markets = ftx.load_markets(True)
+            all_markets = exchange.load_markets(True)
             trycnt = 0
         except Exception as e:
             print("Connection error, trying again...")
             f = open("3ctrigger_log.txt", "a")
-            f.write(f'FTX cononnection error at {strftime("%Y-%m-%d %H:%M:%S", gmtime())} UTC\n')
+            f.write(f'Exchange cononnection error at {strftime("%Y-%m-%d %H:%M:%S", gmtime())} UTC\n')
             f.close()
             trycnt -= 1
             if trycnt == 3:
@@ -60,14 +66,14 @@ def get_tradeable_balance():
     trycnt = 4
     while trycnt > 0:
         try:
-            account_balances = ftx.fetch_balance()
+            account_balances = exchange.fetch_balance()
             balance = account_balances["total"]["USD"]
             print(f'Balance: {balance}')
             trycnt = 0
         except Exception as e:
             print(e)
             f = open("3ctrigger_log.txt", "a")
-            f.write(f'FTX connection error at {strftime("%Y-%m-%d %H:%M:%S", gmtime())} UTC: {e}\n')
+            f.write(f'Exchange connection error at {strftime("%Y-%m-%d %H:%M:%S", gmtime())} UTC: {e}\n')
             f.close()
             trycnt -= 1
             if trycnt == 3:
@@ -89,11 +95,12 @@ def get_tradeable_balance():
 def start_bot(pair, ids):
     bot_id = ids[pair]
     f = open("3ctrigger_log.txt", "a")
-    f.write(f'Enable bot for {pair} at {strftime("%Y-%m-%d %H:%M:%S", gmtime())} UTC\n')
+    f.write(f'Enable bot {bot_id} for {pair} at {strftime("%Y-%m-%d %H:%M:%S", gmtime())} UTC\n')
     f.close()
     error, bot_trigger = p3cw.request(
         entity = 'bots',
         action = 'enable',
+        additional_headers={"Forced-Mode": config.TC_MODE},
         action_id = bot_id
     )   
     print(f'Bot Enabled for {pair} - {bot_id}')
@@ -109,6 +116,7 @@ def close_deal(pair, bot_id):
     error, deal_close = p3cw.request(
         entity = 'bots',
         action = 'panic_sell_all_deals',
+        additional_headers={"Forced-Mode": config.TC_MODE},
         action_id = str(bot_id)
     )
     print(f'Panic Close - {pair}')
@@ -118,7 +126,7 @@ def close_deal(pair, bot_id):
 
 def get_positions():
     open_positions = {}
-    all_positions = ftx.fetchPositions(None, {"showAvgPrice": True})
+    all_positions = exchange.fetchPositions(None, {"showAvgPrice": True})
     try:
       if 'info' in all_positions[0]:
         for y in all_positions:
@@ -162,11 +170,12 @@ def get_max_bot_usage(balance):
 
 def disable_bot(pair, bot_id):
     f = open("3ctrigger_log.txt", "a")
-    f.write(f'Disable bot for {pair} - {bot_id} at {strftime("%Y-%m-%d %H:%M:%S", gmtime())} UTC\n')
+    f.write(f'Disable bot {bot_id} for {pair} - {bot_id} at {strftime("%Y-%m-%d %H:%M:%S", gmtime())} UTC\n')
     f.close()
     error, data = p3cw.request(
         entity='bots',
         action='disable',
+        additional_headers={"Forced-Mode": config.TC_MODE},
         action_id = str(bot_id),
     )
     print(f'Error: {error}')
@@ -184,6 +193,7 @@ def get_bot_info():
         error, data = p3cw.request(
             entity='bots',
             action='',
+            additional_headers={"Forced-Mode": config.TC_MODE},
             payload={
                 "account_id": config.TC_ACCOUNT_ID,
                 "limit": base_offset,
@@ -203,6 +213,7 @@ def get_enabled_bots():
     bot_list = get_bot_info()
     for bot in bot_list:
         if bot["is_enabled"] == True:
+          if config.LONG_PREFIX in bot["name"] or config.SHORT_PREFIX in bot["name"]:
             bot_id = bot["id"]
             bot_pair = bot["pairs"][0]
             bot_strategy = bot["strategy"]
@@ -228,12 +239,12 @@ def perp_stats(perp):
     trycnt = 4
     while trycnt > 0:
         try:
-            candles = ftx.fetch_ohlcv(perp, str(int(time_frame)) + time_frame_units, from_time_stamp)
+            candles = exchange.fetch_ohlcv(perp, str(int(time_frame)) + time_frame_units, from_time_stamp)
             trycnt = 0
         except Exception as e:
             print("Connection error, trying again...")
             f = open("3ctrigger_log.txt", "a")
-            f.write(f'FTX cononnection error at {strftime("%Y-%m-%d %H:%M:%S", gmtime())} UTC\n')
+            f.write(f'Exchange cononnection error at {strftime("%Y-%m-%d %H:%M:%S", gmtime())} UTC: {e}\n')
             f.close()
             trycnt -= 1
             if trycnt == 3:
@@ -343,10 +354,10 @@ while True:
             ADX_Slope = unfiltered_stats[2]
             DM_plus = unfiltered_stats[3]
             DM_minus = unfiltered_stats[4]
-            if ADX > 15 and (ADX_Slope > 0 and ((DM_plus > DM_minus and ADX > DM_minus) or (ADX < DM_plus and ADX < DM_minus))) and DM_plus > DM_minus:
+            if ADX > config.ADX_MIN_LONG and (ADX_Slope > 0 and ((DM_plus > DM_minus and ADX > DM_minus) or (ADX < DM_plus and ADX < DM_minus))) and DM_plus > DM_minus:
                 unfiltered_stats.append("long")
                 unsorted_tradable_perps.append(unfiltered_stats)
-            elif ADX > 15 and (ADX_Slope > 0 and ((DM_plus < DM_minus and ADX > DM_plus) or (ADX < DM_plus and ADX < DM_minus))) and DM_plus < DM_minus:
+            elif ADX > config.ADX_MIN_SHORT and (ADX_Slope > 0 and ((DM_plus < DM_minus and ADX > DM_plus) or (ADX < DM_plus and ADX < DM_minus))) and DM_plus < DM_minus:
                 unfiltered_stats.append("short")
                 unsorted_tradable_perps.append(unfiltered_stats)
             elif ADX_Slope < 0:
