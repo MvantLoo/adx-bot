@@ -61,10 +61,6 @@ This script creates a set of trading bots on [3Commas.io](https://3commas.io/?c=
      sudo apt-get -y install build-essential wget git unzip tmux python3 python3-pip
      ```
   1. ```
-     pip3 install --upgrade setuptools
-     pip3 install TA-lib pandas_ta ccxt py3cw
-     ```
-  1. ```
      sudo wget http://prdownloads.sourceforge.net/ta-lib/ta-lib-0.4.0-src.tar.gz
      tar -xzf ta-lib-0.4.0-src.tar.gz
      cd ta-lib/
@@ -72,6 +68,10 @@ This script creates a set of trading bots on [3Commas.io](https://3commas.io/?c=
      make
      sudo make install
      cd ..
+     ```
+  1. ```
+     pip3 install --upgrade setuptools
+     pip3 install TA-lib pandas_ta ccxt py3cw
      ```
   1. ```
      git clone https://github.com/MvantLoo/adx-bot
