@@ -215,9 +215,24 @@ def get_enabled_bots():
         if bot["is_enabled"] == True:
           if config.LONG_PREFIX in bot["name"] or config.SHORT_PREFIX in bot["name"]:
             bot_id = bot["id"]
-            bot_pair = bot["pairs"][0]
             bot_strategy = bot["strategy"]
-            enabled_bots[bot_pair[4:]] = bot_id, bot_strategy
+
+	        # Default for FTX Futures
+            bot_pair = bot["pairs"][0] 
+            if config.LEVERAGE_CUSTOM_VALUE == 0:
+              bot_pair_base = bot["pairs"][0].split("_")[0]
+              bot_pair_quote = bot["pairs"][0].split("_")[1]
+
+              # Spot for FTX or BINANCE
+              if config.EXCHANGE == 'FTX':
+                bot_pair = f'{bot_pair_quote}/{bot_pair_base}'
+              elif config.EXCHANGE == 'BINANCE':
+                bot_pair = f'{bot_pair_quote}{bot_pair_base}'
+
+              enabled_bots[bot_pair] = bot_id, bot_strategy
+            else:
+              enabled_bots[bot_pair[4:]] = bot_id, bot_strategy
+
     return enabled_bots
 
 
