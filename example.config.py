@@ -10,6 +10,7 @@ SECRET_KEY = ''
 SUB_ACCOUNT = ''
 
 PAIRS_BLACKLIST = ['STEP-PERP', 'DMG-PERP', 'BRZ-PERP', 'PERP/USD', 'SRN-PERP', 'PRIV-PERP', 'SHIB-PERP', 'CUSDT-PERP']
+SPOT_COINS = ['BTC', 'ETH', 'BNB']
 MAX_OPEN_POSITIONS = 10
 FUNDS_USAGE = 1
 TF = 15 # Timeframe - always in minutes - Greater than 1 minute, less than 1 day.
