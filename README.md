@@ -43,9 +43,9 @@ This script creates a set of trading bots on [3Commas.io](https://3commas.io/?c=
 
 ## Setup Google Cloud VM
 
-- Go to https://cloud.google.com/
-- Select at Compute Engine: `VM instances`
-- Press at `Create Instance` (Enable API if needed)
+- Go to https://console.cloud.google.com/ and login with your Google account
+- Select at the left (open menu if needed) `COMPUTE` - `Compute Engine` - `VM instances`
+- Press `Create Instance` (Enable API if needed)
   - Name: `vm-pybot`
   - Region: `us-east1 (South Carolina)`
   - Machine type: `e2-micro (2 vCPU, 1 GB memory`
