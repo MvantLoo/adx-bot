@@ -119,7 +119,7 @@ def generate_long_bots(pairs, minprice):
                 continue
             bot_list[key] = data["id"]
             print(f'{key}  > {bot_list[key]}')
-            time.sleep(0.3)
+            time.sleep(0.1)
             f = open("lbotid_list.txt", "a")
             f.write(f'{key}:{bot_list[key]}\n')
             f.close()
@@ -173,7 +173,7 @@ def generate_short_bots(pairs, minprice):
                 continue
             bot_list[key] = data["id"]
             print(f'{key}  > {bot_list[key]}')
-            time.sleep(0.3)
+            time.sleep(0.1)
             f = open("sbotid_list.txt", "a")
             f.write(f'{key}:{bot_list[key]}\n')
             f.close()
