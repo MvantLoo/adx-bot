@@ -17,15 +17,20 @@ p3cw = Py3CW(
     }
 )
 
-ftx = ccxt.ftx({
-    'apiKey': config.API_KEY,
-    'secret': config.SECRET_KEY,
-    'headers': {'FTX-SUBACCOUNT': config.SUB_ACCOUNT}
-})
-
+if config.EXCHANGE == 'FTX':
+    exchange = ccxt.ftx({
+        'apiKey': config.API_KEY,
+        'secret': config.SECRET_KEY,
+        'headers': {'FTX-SUBACCOUNT': config.SUB_ACCOUNT}
+    })
+elif config.EXCHANGE == 'BINANCE':
+    exchange = ccxt.binance({
+        'apiKey': config.API_KEY,
+        'secret': config.SECRET_KEY
+    })
 
 def get_markets():
-    all_markets = ftx.load_markets(True)
+    all_markets = exchange.load_markets(True)
     return all_markets
 
 
@@ -50,17 +55,27 @@ def get_markets():
 def build_tc_pairs_list(pairs):
     tc_pairs = {}
     for key in markets:
-        if "PERP" in markets[key]["id"] and not any(perp in markets[key]["id"] for perp in config.PAIRS_BLACKLIST):
-            tc_pairs[markets[key]["id"]] = ""
+	if config.LEVERAGE_CUSTOM_VALUE:
+		if "PERP" in markets[key]["id"] and not any(perp in markets[key]["id"] for perp in config.PAIRS_BLACKLIST):
+		    tc_pairs[markets[key]["id"]] = ""
+	else:
+		if not any(x in markets[key]["id"] for x in ["BULL", "BEAR", "HALF", "HEDGE"]) and markets[key]["type"] == "spot" and markets[key]["quote"] == config.QUOTE:
+		     if markets[key]["base"] in config.SPOT_COINS:
+		          tc_pairs[markets[key]["id"]] = f'{markets[key]["quote"]}_{markets[key]["base"]}'
     return tc_pairs
 
 
 def get_min_order_price(markets):
     limits = {}
     for key in markets:
-        if "PERP" in markets[key]["id"] and not any(perp in markets[key]["id"] for perp in config.PAIRS_BLACKLIST):
-            if "minProvideSize" in markets[key]["info"]:
-                limits[markets[key]["id"]] = math.ceil(float(markets[key]["info"]["minProvideSize"]) * float(markets[key]["info"]["price"]))
+	if config.LEVERAGE_CUSTOM_VALUE:
+		if "PERP" in markets[key]["id"] and not any(perp in markets[key]["id"] for perp in config.PAIRS_BLACKLIST):
+		    if "minProvideSize" in markets[key]["info"]:
+		        limits[markets[key]["id"]] = math.ceil(float(markets[key]["info"]["minProvideSize"]) * float(markets[key]["info"]["price"]))
+	else:
+		if not any(x in markets[key]["id"] for x in ["BULL", "BEAR", "HALF", "HEDGE"]) and markets[key]["type"] == "spot" and markets[key]["quote"] == config.QUOTE:
+		    if "minProvideSize" in markets[key]["info"]:
+		        limits[markets[key]["id"]] = math.ceil(float(markets[key]["info"]["minProvideSize"]) * float(markets[key]["info"]["price"]))
     return limits
 
 def generate_long_bots(pairs, minprice):
@@ -72,10 +87,11 @@ def generate_long_bots(pairs, minprice):
             error, data = p3cw.request(
                 entity='bots',
                 action='create_bot',
+                additional_headers={"Forced-Mode": config.TC_MODE},
                 payload={
-                "name": "LongPy_"+key,
+                "name": config.LONG_PREFIX + key,
                 "account_id": config.TC_ACCOUNT_ID,
-                "pairs": "USD_"+key,
+                "pairs": pairs[key],
                 "base_order_volume": config.BASE_ORDER_VOLUME,
                 "base_order_volume_type": "quote_currency",
                 "take_profit": config.TAKE_PROFIT,
@@ -88,11 +104,14 @@ def generate_long_bots(pairs, minprice):
                 "safety_order_step_percentage": config.SAFETY_ORDER_STEP_PERCENTAGE,
                 "take_profit_type": "total",
                 "strategy_list": [{"strategy":"nonstop"}],
-                "leverage_type": "cross",
+                "leverage_type": "cross" if config.LEVERAGE_CUSTOM_VALUE > 0 else "not_specified",
                 "leverage_custom_value": config.LEVERAGE_CUSTOM_VALUE,
-                "start_order_type": "market",
+                "start_order_type": config.START_ORDER_TYPE,
                 "stop_loss_type": "stop_loss",
-                "strategy": "long"
+                "strategy": "long",
+                "min_volume_btc_24h": config.MIN_VOLUME,
+                "trailing_enabled": "yes" if config.TRAILING else "no",
+                "trailing_deviation": config.TRAILING_DEVIATION
                 }
             )
             if len(error) > 0:
@@ -122,10 +141,11 @@ def generate_short_bots(pairs, minprice):
             error, data = p3cw.request(
                 entity='bots',
                 action='create_bot',
+                additional_headers={"Forced-Mode": config.TC_MODE},
                 payload={
-                "name": "ShortPy_"+key,
+                "name": config.SHORT_PREFIX + key,
                 "account_id": config.TC_ACCOUNT_ID,
-                "pairs": "USD_"+key,
+                "pairs": pairs[key],
                 "base_order_volume": config.BASE_ORDER_VOLUME,
                 "base_order_volume_type": "quote_currency",
                 "take_profit": config.TAKE_PROFIT,
@@ -138,11 +158,14 @@ def generate_short_bots(pairs, minprice):
                 "safety_order_step_percentage": config.SAFETY_ORDER_STEP_PERCENTAGE,
                 "take_profit_type": "total",
                 "strategy_list": [{"strategy":"nonstop"}],
-                "leverage_type": "cross",
+                "leverage_type": "cross" if config.LEVERAGE_CUSTOM_VALUE > 0 else "not_specified",,
                 "leverage_custom_value": config.LEVERAGE_CUSTOM_VALUE,
-                "start_order_type": "market",
+                "start_order_type": config.START_ORDER_TYPE,
                 "stop_loss_type": "stop_loss",
-                "strategy": "short"
+                "strategy": "short",
+                "min_volume_btc_24h": config.MIN_VOLUME,
+                "trailing_enabled": "yes" if config.TRAILING else "no",
+                "trailing_deviation": config.TRAILING_DEVIATION
                 }
             )
             if len(error) > 0:
