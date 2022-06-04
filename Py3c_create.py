@@ -59,9 +59,9 @@ def build_tc_pairs_list(pairs):
             if "PERP" in markets[key]["id"] and not any(perp in markets[key]["id"] for perp in config.PAIRS_BLACKLIST):
                 tc_pairs[markets[key]["id"]] = ""
         else:
-        if not any(x in markets[key]["id"] for x in ["BULL", "BEAR", "HALF", "HEDGE"]) and markets[key]["type"] == "spot" and markets[key]["quote"] == config.QUOTE:
-             if markets[key]["base"] in config.SPOT_COINS:
-                  tc_pairs[markets[key]["id"]] = f'{markets[key]["quote"]}_{markets[key]["base"]}'
+            if not any(x in markets[key]["id"] for x in ["BULL", "BEAR", "HALF", "HEDGE"]) and markets[key]["type"] == "spot" and markets[key]["quote"] == config.QUOTE:
+                if markets[key]["base"] in config.SPOT_COINS:
+                    tc_pairs[markets[key]["id"]] = f'{markets[key]["quote"]}_{markets[key]["base"]}'
     return tc_pairs
 
 
