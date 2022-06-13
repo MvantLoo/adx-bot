@@ -96,7 +96,7 @@ def generate_long_bots(pairs, minprice):
                 }
             )
             if len(error) > 0:
-                print(f'generate_long_bots: {key} Error: {error}')
+                print(f'generate_long_bots: {key} 3C-Error: {error}')
                 continue
             bot_list[key] = data["id"]
             print(f'{key}  > {bot_list[key]}')
@@ -146,7 +146,7 @@ def generate_short_bots(pairs, minprice):
                 }
             )
             if len(error) > 0:
-                print(f'generate_short_bots: {key} Error: {error}')
+                print(f'generate_short_bots: {key} 3C-Error: {error}')
                 continue
             bot_list[key] = data["id"]
             print(f'{key}  > {bot_list[key]}')
