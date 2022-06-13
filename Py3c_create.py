@@ -26,6 +26,9 @@ ftx = ccxt.ftx({
 
 def get_markets():
     all_markets = ftx.load_markets(True)
+    if len(all_markets) < 5:
+        print('get_markets: FTX warning: Less then 5 objects')
+        print(all_markets)
     return all_markets
 
 
