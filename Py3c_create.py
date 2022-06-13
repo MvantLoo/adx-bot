@@ -96,7 +96,7 @@ def generate_long_bots(pairs, minprice):
                 }
             )
             if len(error) > 0:
-                print(f'{key} Error: {error}')
+                print(f'generate_long_bots: {key} Error: {error}')
                 continue
             bot_list[key] = data["id"]
             print(f'{key}  > {bot_list[key]}')
@@ -105,7 +105,7 @@ def generate_long_bots(pairs, minprice):
             f.write(f'{key}:{bot_list[key]}\n')
             f.close()
         else:
-            print(f'Order volume too low for {key}, bot not created')
+            print(f'generate_long_bots: Order volume too low for {key}, bot not created')
             order_too_low.append(key)
     print(f'The following long pairs were ignored, order volume too low: {order_too_low}')
     file = open("ignored_longs.txt", "w")
@@ -146,7 +146,7 @@ def generate_short_bots(pairs, minprice):
                 }
             )
             if len(error) > 0:
-                print(f'{key} Error: {error}')
+                print(f'generate_short_bots: {key} Error: {error}')
                 continue
             bot_list[key] = data["id"]
             print(f'{key}  > {bot_list[key]}')
@@ -155,7 +155,7 @@ def generate_short_bots(pairs, minprice):
             f.write(f'{key}:{bot_list[key]}\n')
             f.close()
         else:
-            print(f'Order volume too low for {key}, bot not created')
+            print(f'generate_short_bots: Order volume too low for {key}, bot not created')
             order_too_low.append(key)
     print(f'The following short pairs were ignored, order volume too low: {order_too_low}')
     file = open("ignored_shorts.txt", "w")
