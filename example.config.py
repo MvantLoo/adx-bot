@@ -1,11 +1,14 @@
+# 3Commas account setttings
 TC_ACCOUNT_ID = ''
 TC_API_KEY = ''
 TC_API_SECRET = ''
 BASE_URL = 'https://api.3commas.io'
 
+# FTX account settings
 API_KEY = ''
 SECRET_KEY = ''
 SUB_ACCOUNT = ''
+
 
 PAIRS_BLACKLIST = ['STEP-PERP', 'DMG-PERP', 'BRZ-PERP', 'PERP/USD', 'SRN-PERP', 'PRIV-PERP', 'SHIB-PERP', 'CUSDT-PERP']
 MAX_OPEN_POSITIONS = 10
@@ -20,9 +23,11 @@ EARLY_CLOSE = False
 CLOSE_DEALS = False # Allow bot to close deals on opposite signals. Use False to manually rescue red bags.
 
 # 3Commas Bot Settings
-BASE_ORDER_VOLUME = 5 #IN USD
+LONG_PREFIX = 'LongPy_'
+SHORT_PREFIX = 'ShortPy_'
+BASE_ORDER_SIZE = 5 # In USD
+SAFETY_ORDER_SIZE = 1.5
 TAKE_PROFIT = 2
-SAFETY_ORDER_VOLUME = 1.5
 MARTINGALE_VOLUME_COEFFICIENT = 1.11
 MARTINGALE_STEP_COEFFICIENT = 0.91
 MAX_SAFETY_ORERS = 12
