@@ -40,7 +40,7 @@ def update_bots(pairs, strategy):
                 "active_safety_orders_count": config.MAX_ACTIVE_SAFETY_ORDERS_COUNT,
                 "safety_order_step_percentage": config.SAFETY_ORDER_STEP_PERCENTAGE,
                 "take_profit_type": "total",
-                "strategy_list": [{"strategy":"nonstop"}],
+                "strategy_list": config.STRATEGY,
                 "leverage_type": "cross",
                 "leverage_custom_value": config.LEVERAGE_CUSTOM_VALUE,
                 "start_order_type": config.START_ORDER_TYPE,

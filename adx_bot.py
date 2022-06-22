@@ -94,7 +94,7 @@ def perp_stats(perp):
         except Exception as e:
             print("Connection error, trying again...")
             f = open(config.LOGFILE, "a")
-            f.write(f'{strftime("%Y-%m-%d %H:%M:%S", gmtime())} UTC - FTX connection error.\n')
+            f.write(f'{strftime("%Y-%m-%d %H:%M:%S", gmtime())} UTC - [perp_stats] FTX connection error.\n')
             f.close()
             trycnt -= 1
             if trycnt == 3:
@@ -321,7 +321,6 @@ sorted_tradable_perps = []
 tradable_perps = {}
 
 while True:
-    time.sleep(0.5) # Give the CPU a break.
     while update_stats_time:
         print('Getting perps OHLCV data...')
         for perp in long_bot_ids:
@@ -343,6 +342,7 @@ while True:
                 unfiltered_stats.append("ignore")
                 unsorted_tradable_perps.append(unfiltered_stats)
             print(".", end =" ")
+        print(".")
 
         # Sort the lists by EMA Slope
         sorted_tradable_perps = sorted(unsorted_tradable_perps, key=operator.itemgetter(5), reverse = True)
@@ -356,9 +356,9 @@ while True:
         # Show open positions
         open_positions = get_positions()
         print("Open Positions:")
-        print(json.dumps(open_positions, indent=4, sort_keys=True))
+        print(open_positions)
         f = open(config.LOGFILE, "a")
-        f.write(f'{strftime("%Y-%m-%d %H:%M:%S", gmtime())} UTC - Open Positions: {open_positions}\n')
+        f.write(f'{strftime("%Y-%m-%d %H:%M:%S", gmtime())} UTC - Open Positions: {json.dumps(open_positions, indent=4, sort_keys=True)}\n')
         f.close()
 
         # Show enabled bots
@@ -366,7 +366,7 @@ while True:
         print("Enabled Bots:")
         print(enabled_bots)
         f = open(config.LOGFILE, "a")
-        f.write(f'{strftime("%Y-%m-%d %H:%M:%S", gmtime())} UTC - Enabled Bots: {enabled_bots}\n')
+        f.write(f'{strftime("%Y-%m-%d %H:%M:%S", gmtime())} UTC - Enabled Bots: {json.dumps(enabled_bots, indent=4, sort_keys=True)}\n')
         f.close()
         
         available_bots = max_positions - max(len(enabled_bots), len(open_positions))
@@ -431,23 +431,19 @@ while True:
         update_stats_time = False
         # write to file next expected checkin time.
         next_update = datetime.datetime.now() + datetime.timedelta(seconds=config.TF*60)
-        #f = open(config.LOGFILE, "a")
-        #f.write(str(next_update))
-        #f.close()
+        f = open(config.LOGFILE, "a")
+        f.write(f"Next update: {next_update}\n")
+        f.close()
         print("Waiting for next TF....")
         time.sleep(60)
         
-    print("[debug] end update_stats_time")
-
     open_positions.clear()
     unsorted_tradable_perps.clear()
     sorted_tradable_perps.clear()
     tradable_perps.clear()
     enabled_bots.clear()
 
-
-    #now = datetime.datetime.now()
-    
+    # Once per day, check the balance and update the number of max positions
     if strftime("%Y-%m-%d", gmtime()) > last_balance_check:
         tradeable_balance = get_tradeable_balance()
         bot_usage = get_max_bot_usage(tradeable_balance)
@@ -458,16 +454,16 @@ while True:
 
         last_balance_check = strftime("%Y-%m-%d", gmtime())
         f = open(config.LOGFILE, "a")
-        f.write(f'Updated Balance: {tradeable_balance}, Max Positions: {max_positions} at {strftime("%Y-%m-%d %H:%M:%S", gmtime())} UTC\n')
-        f.write(">>>>\n")
+        f.write(f'{strftime("%Y-%m-%d %H:%M:%S", gmtime())} UTC - Updated Balance: {tradeable_balance}, Max Positions: {max_positions}\n')
         f.close()
         print(f'Updated Balance: {tradeable_balance}, Max Positions: {max_positions}')
         
-
+    # Every "TF" minutes, enable the refresh for the next cyclus
     now = datetime.datetime.now(timezone.utc)
     midnight = now.replace(hour=0, minute=0, second=0, microsecond=0)
     minutes = ((now - midnight).seconds) // 60
-    
-    if (minutes % config.TF) == 0 :
-        time.sleep(5)
+    if (minutes % config.TF) == 0 : 
         update_stats_time = True
+
+    print("Give the CPU a break, wait a minute...")
+    time.sleep(60) 
