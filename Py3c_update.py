@@ -15,10 +15,23 @@ p3cw = Py3CW(
 )
 
 def update_bots(pairs, strategy):
+    if config.START_CONDITION == "ASAP":
+        config.STRATEGY_LONG = [{"strategy":"nonstop"}]
+        config.STRATEGY_SHORT = [{"strategy":"nonstop"}]
+    elif config.START_CONDITION[0:4] == "RSI7":
+        (cmd, points) = config.START_CONDITION.split(':')
+        config.STRATEGY_LONG = [{"strategy": "rsi", "options": {"time_period": 7, "time": str(config.TF)+"m", "trigger_condition": "less", "points": int(points) } }]
+        config.STRATEGY_SHORT = [{"strategy": "rsi", "options": {"time_period": 7, "time": str(config.TF)+"m", "trigger_condition": "more", "points": 100-int(points) } }]
+    else:
+        print("[update_bots] Something is wrong with START_CONDITION")
+        exit(1)
+
     if strategy == "long":
         pre_name = config.LONG_PREFIX
+        strategy_list = config.STRATEGY_LONG
     elif strategy == "short":
         pre_name = config.SHORT_PREFIX
+        strategy_list = config.STRATEGY_SHORT
     for key in pairs:
         bot_id = pairs[key]
         try:
@@ -41,7 +54,7 @@ def update_bots(pairs, strategy):
                 "active_safety_orders_count": config.MAX_ACTIVE_SAFETY_ORDERS_COUNT,
                 "safety_order_step_percentage": config.SAFETY_ORDER_STEP_PERCENTAGE,
                 "take_profit_type": "total",
-                "strategy_list": config.STRATEGY,
+                "strategy_list": strategy_list,
                 "leverage_type": "cross",
                 "leverage_custom_value": config.LEVERAGE_CUSTOM_VALUE,
                 "start_order_type": config.START_ORDER_TYPE,
