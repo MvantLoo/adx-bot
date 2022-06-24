@@ -21,7 +21,7 @@ def update_bots(pairs, strategy):
     elif config.START_CONDITION[0:4] == "RSI7":
         (cmd, points) = config.START_CONDITION.split(':')
         config.STRATEGY_LONG = [{"strategy": "rsi", "options": {"time_period": 7, "time": str(config.TF)+"m", "trigger_condition": "less", "points": int(points) } }]
-        config.STRATEGY_SHORT = [{"strategy": "rsi", "options": {"time_period": 7, "time": str(config.TF)+"m", "trigger_condition": "more", "points": 100-int(points) } }]
+        config.STRATEGY_SHORT = [{"strategy": "rsi", "options": {"time_period": 7, "time": str(config.TF)+"m", "trigger_condition": "greater", "points": 100-int(points) } }]
     else:
         print("[update_bots] Something is wrong with START_CONDITION")
         exit(1)
