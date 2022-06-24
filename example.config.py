@@ -45,10 +45,7 @@ STOP_LOSS_TIMEOUT_IN_SECONDS = 300
 START_ORDER_TYPE = 'market'
 #MIN_VOLUME = 150
 
-# Start Conditions - See "strategy_list" at https://github.com/3commas-io/3commas-official-api-docs/blob/master/bots_api.md
-# Default (ASAP): [{"strategy":"nonstop"}]
-# Example with RSI and ULT: [{"strategy":"rsi","options":{"time_period":7,"time":"5m","trigger_condition":"less","points":55}},{"strategy":"ult","options":{"time":"5m","points":55}}]
-STRATEGY = [{"strategy":"nonstop"}]
+START_CONDITION = "ASAP"
 
 # Script settings - DO NOT EDIT
 LIST_LONGBOTS = 'list_longbots.txt'

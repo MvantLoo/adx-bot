@@ -66,7 +66,7 @@ if config.FUNDS_USAGE <= 0:
     print("FUNDS_USAGE should be higher then 0 and lower or equal to 1. (1 = 100%)\nUpdate file `config.py`.")
     exit(1)
 if config.FUNDS_USAGE > 1:
-    print("FUNDS_USAGE should be equal or lower then 1. (1 = 100%)\nUpdate file `config.py`.")
+    print("FUNDS_USAGE should be lower or equal then 1. (1 = 100%)\nUpdate file `config.py`.")
     exit(1)
 
 try:    config.TF
