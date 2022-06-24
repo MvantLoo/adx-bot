@@ -1,5 +1,6 @@
 import time
 import config
+import default_config
 from py3cw.request import Py3CW
 from pathlib import Path
 

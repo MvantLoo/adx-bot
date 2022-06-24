@@ -2,6 +2,7 @@ import ccxt
 import time
 import math
 import config
+import default_config
 import os
 from time import gmtime, strftime
 from py3cw.request import Py3CW
